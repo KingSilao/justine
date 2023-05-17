@@ -1,0 +1,636 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Property Tax Calculator</title>
+	<style>
+		body {
+			background-color: #22E4AC;
+			font-family: Arial, sans-serif;
+            
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+		h1 {
+			color: #1a237e;
+			font-size: 2.5em;
+			text-align: center;
+			margin-top: 50px;
+		}
+		p{
+			text-align: center;
+			color: black;
+				}
+		form {
+			background-color: #379683;
+			border-radius: 50px;
+			box-shadow: 0px 0px 10px #cccccc;
+			padding: 20px;
+			margin: 0 auto;
+			max-width: 500px;
+			margin-top: 10px;
+			margin-bottom: 50px;
+		}
+		label {
+			display: block;
+			font-size: 1.2em;
+			color: white;
+			margin-top: 15px;
+			margin-bottom: 5px;
+		}
+		input[type="text"], select {
+			width: 100%;
+			padding: 12px;
+			border: 1px solid #cccccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+			font-size: 1.2em;
+			margin-top: 5px;
+			margin-bottom: 10px;
+			background-color: #f2f2f2;
+			color: #333333;
+		}
+		#property_type, #barangay, #street {
+			width: 100%;
+			padding: 12px;
+			border: 1px solid #cccccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+			font-size: 1.2em;
+			margin-top: 5px;
+			margin-bottom: 10px;
+			background-color: #f2f2f2;
+			color: #333333;
+		}
+		input[type="submit"] {
+			background-color: #1a237e;
+			color: #ffffff;
+			font-size: 1.2em;
+			border: none;
+			border-radius: 4px;
+			padding: 12px 20px;
+			cursor: pointer;
+			margin-top: 10px;
+			margin-bottom: 20px;
+			width: 100%;
+		}
+		input[type="submit"]:hover {
+			background-color: #333366;
+		}
+
+		#Assessed_Value {
+			width: 100%;
+			padding: 12px;
+			border: 1px solid #cccccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+			font-size: 1.2em;
+			margin-top: 5px;
+			margin-bottom: 10px;
+			background-color: #ffffff;
+			color: blue;
+			text-align: center;
+			font-weight: bold;
+		}
+
+		#payable_tax {
+			width: 100%;
+			padding: 12px;
+			border: 1px solid #cccccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+			font-size: 1.2em;
+			margin-top: 5px;
+			margin-bottom: 10px;
+			background-color: #ffffff;
+			color: red;
+			text-align: center;
+			font-weight: bold;
+		}
+		.note {
+			font-size: 0.8em;
+			color: #666666;
+			margin-top: 20px;
+			margin-bottom: 0;
+			text-align: center;
+		}
+		.note span {
+			font-weight: bold;
+			color: #333333;
+		}
+	</style>
+	<script>
+
+		
+        var vicinityValues = {                                            //WALA NA RENAME VICINITY GIHAPON INSTEAD OF CLASSIFICATION
+  'class 1': 13061,     //From T. Sanchez Street to Noli Me Tangere Street
+  'class 2': 11149,	 //From Noli Me Tangere Street to F. Durano Street
+  'class 3': 7286,	     //From T. Sanchez Street to Noli Me Tangere Street
+  'class 4': 3820,	     //From Noli Me Tangere Street to F. Durano Street
+  'class 5': 2665,      //From T. Sanchez Street to Noli Me Tangere Street
+  'class 6': 4050,	 	 //A.D. Curato -  M. Calo
+  'class 7': 7286,      //M. Calo - M. Tupaz
+  'class 8': 8050,	     //M. Tupaz - Mabini Street
+  'class 9': 4050,      //From A.D. Curato Street to M. Calo Street   
+  'class 10': 7250,	 //From M. Calo Street to A. Mabini Street
+  'class 11': 3490,	 //M. Calo - M. Tupaz
+  'class 12': 3713,     //M. Tupaz - Mabini Street
+  'class 13': 8770,	//From A.D. Curato Street to M. Calo Street
+  'class 14': 5860,	//From M. Calo Street to A. Mabini Street 
+  'class 15': 3490,	//M. Calo - Mabini  Street
+  'class 16': 2150,
+  'class 17': 2500, /////class ang naay value
+  //
+  'class 18': 35900,	
+  'class 19': 28250,	
+  'class 20': 25565,	
+  'class 21': 21625,	
+  'class 22': 3580,	
+  'class 23': 5665,	
+  'class 24': 3580,	
+  'class 25': 5665,	
+  'class 26': 36000,	
+  'class 27': 6375,	
+  'class 28': 32660,	
+  'class 29': 25765,	
+  'class 30': 9400,	
+  'class 31': 7750,	
+  'class 32': 21215,	
+  'class 33': 8250,	
+  'class 34': 4350,	
+  // 
+  'class 35': 41400,
+  'class 36': 37400,
+  'class 37': 25513,
+  'class 38': 21725,
+  'class 39': 16142,
+  'class 40': 6275,
+  'class 41': 13000,
+  'class 42': 19215,
+  'class 43': 16020,
+  'class 44': 22713,
+  'class 45': 5625,
+  'class 46': 8250,
+  'class 47': 27760,
+  'class 48': 13000,
+  'class 49': 4125,
+  'class 50': 10250,
+  'class 51': 4559,
+  'class 52': 7840,
+  'class 53': 35900,
+  'class 54': 27750,
+  'class 55': 25566,
+  'class 56': 21625,
+  'class 57': 15700,
+  'class 58': 4675,
+  'class 59': 37500,
+  'class 60': 5750,
+  'class 61': 12780,
+  'class 62': 4650,
+  'class 63': 9000,
+  'class 64': 8650,
+  'class 65': 5750,
+  'class 66': 8400,
+  'class 67': 9000,
+  'class 68': 7875,
+  'class 69': 7365,
+  'class 70': 10825,
+  'class 71': 9000,
+
+
+
+
+
+};
+var barangays = {
+  "AGAO (DISTRICT 1)": {
+                         "APOLONIO D. CURATO STREET":    ["From T. Sanchez Street to Noli Me Tangere Street_1", 
+                                                          "From Noli Me Tangere Street to F. Durano Street_2"],
+
+                         "MARCOS M. CALO ST":            ["From T. Sanchez Street to Noli Me Tangere Street_3", 
+                                                          "From Noli Me Tangere Street to F. Durano Street_4"],
+
+                         "MATEO TUPAZ ST":               ["From T. Sanchez Street to Noli Me Tangere Street_5"],
+
+                         "LAGNADA STREET":               ["A.D. Curato -  M. Calo_6",
+                                                          "M. Calo - M. Tupaz_7",
+                                                          "M. Tupaz - Mabini Street_8"],
+
+                         "TEOFILO SANCHEZ ST":          ["From A.D. Curato Street to M. Calo Street_9",
+                                                         "From M. Calo Street to A. Mabini Street_10",
+                                                         "M. Calo - M. Tupaz_11",
+                                                         "M. Tupaz - Mabini Street_12"],
+
+                         "NOLI ME TANGERE ST":          ["From A.D. Curato Street to M. Calo Street_13",
+                                                         "From M. Calo Street to A. Mabini Street_14",
+                                                         "M. Calo - Mabini  Street_15"],
+
+                         "FELIMON DURANO ST":		    ["(Outside the Dike)_16"]
+  },
+  "DATU SILONGAN (DISTRICT 1)": {
+   						 "APOLONIO CURATO ST": 			["From J.C. Aquino Avenue to Datu Silongan Street_17",
+						 								 "From Datu Silongan Street to Gomez Street_18"],
+
+   						 "MARCOS M. CALO ST": 			["From J.C. Aquino Avenue to D. Silongan Street_19",
+						 								 "From D. Silongan Street to Gomez Street_20"],
+
+  						 "MATEO TUPAZ ST":			    ["From J.C. Aquino Avenue to Gomez Street_21"],
+
+					     "APOLINARIO MABINI ST": 		["From J.C. Aquino Street to Gomez Street_22"],
+
+					     "J.C. AQUINO AVENUE": 			["From A.D. Curato Street to M. Calo Street_23",
+						 								 "From M. Calo Street to A. Mabini Street_24"],
+
+					     "DATU SILONGAN ST ( formerly Del Pilar St. )": ["From A.D. Curato Street to M. Calo Street_25",
+						 												 "From M. Calo Street to A. Mabini Street_26"],
+	                     "P. GOMEZ ST": 								["From A.D. Curato Street to M. Calo Street_27",
+						 												 "From M. Calo Street to A. Mabini Street_28"]
+                
+	
+  },
+  "DIEGO SILANG (DISTRICT 1)": {
+    					"MONTILLA BLVD.": 					["From J.C. Aquino Avenue to D. Silongan Street  ( former M. Del Pilar Street)_29", 
+															 "From D. Silongan Street to Gomez Street_30",
+															 "From  Gomez Street to T. Sanchez Street_31",
+															 "From T. Sanchez Street to Noli Me Tangere Street_32",
+															 "From Noli Me Tangere Street to F. Durano Street_33"],
+															 
+   					    "RODOLFO CALO STREET": 				["From J.C. Aquino Avenue to Gomez Street_34",
+						   									 "From Gomez Street to T. Sanchez Street_35",
+															 "From T. Sanchez Street to F. Durano Street_36"],
+
+						"SAN FRANCISCO STREET": 			["From J.C. Aquino Avenue to Gomez Street_37",
+															 "From Gomez Street to T. Sanchez Street_38",
+															 "J.C. Aquino-Datu Silongan_39",
+															 "Datu Silongan-Gomez_40",
+															 "P. Gomez - T. Sanchez_41"],
+
+						"ESTER LUNA STREET":		        ["From Noli Me Tangere Street to F. Durano Street_42"],
+
+						"APOLONIO CURATO ST":			    ["From J.C. Aquino Avenue to D. Silongan Street_43",
+															 "From Silongan Street to Lagnada Street_44",
+															 "From Lagnada Street to T. Sanchez Street_45",
+															 "From T. Sanchez Street to Noli Me Tangere Street_46",
+															 "From Noli Me Tangere Street to F. Durano Street_47"],
+
+						"SAN VICENTE ROAD": 			    ["None_48"],
+
+						"J.C. AQUINO AVENUE": 		        ["From Montilla Boulevard to A.D. Curato Street_49",],
+
+						"TEOFILO SANCHEZ ST": 			    ["From Montilla Boulevard to San Francisco Street_50",
+															 "Montilla Blvd.-A. D. Curato_51"],
+
+						"NOLI ME TANGERE ST": 				["From Montilla Boulevard to A.D. Curato Street_52",
+															 "Montilla Blvd.-R. D. Curato_53",
+															 "E. Luna-A. D. Curato_54"],
+
+						"FELIMON DURANO ST": 				["From Montilla Boulevard to A.D. Curato Street_55", 
+															 "Montilla Blvd-R. D. Calo_56",
+															 "R. D. Calo-E. Luna_57",
+															 "E. Luna-A. D. Curato_58"],
+
+						"SULPICIO R. LAGNADA STREET": 		["From R. Calo Street to San Francisco Street_59"],
+
+  				
+
+  }
+};
+        
+function calculateTax() {
+    var tax_rate = 0.01;
+    var size = document.getElementById("size").value;
+    var property_type = document.getElementById("property_type").value;
+    var classification = document.getElementById("classification").value;
+    var vicinityValue = vicinityValues[classification];
+    var multiplier = 0;
+    var Assessed_Value = 0;
+
+    if (property_type == "residential") {
+        multiplier = 0.20;
+    } else if (property_type == "commercial" || property_type == "industrial") {
+        multiplier = 0.50;
+    }
+
+    Assessed_Value = vicinityValue * multiplier * size;
+    var assessedValueFormatted = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Assessed_Value);
+    document.getElementById("Assessed_Value").value = assessedValueFormatted;
+
+	
+
+    var payable_tax = Assessed_Value * tax_rate;
+    var payableTaxFormatted = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(payable_tax);
+    document.getElementById("payable_tax").value = payableTaxFormatted;
+}
+	
+    function updateVicinities() {
+  var barangay = document.getElementById("baranggay").value;
+  var street = document.getElementById("street").value;
+  var vicinitySelect = document.getElementById("vicinity");
+
+  if (barangay in barangays && street in barangays[barangay]) {
+    var vicinities = barangays[barangay][street];
+    var options = "<option value=''>Select Vicinity</option>";
+    for (var i = 0; i < vicinities.length; i++) {
+      options += "<option value='" + vicinities[i] + "'>" + vicinities[i] + "</option>";
+    }
+    vicinitySelect.innerHTML = options;
+  } else {
+    vicinitySelect.innerHTML = "<option value=''>Select Vicinity</option>";
+  }
+  
+  updateClassification();
+}
+
+function updateStreets() {
+  var barangay = document.getElementById("baranggay").value;
+  var streetSelect = document.getElementById("street");
+
+  if (barangay in barangays) {
+    var streets = barangays[barangay];
+    var options = "<option value=''>Select Street</option>";
+    for (var street in streets) {
+      options += "<option value='" + street + "'>" + street + "</option>";
+    }
+    streetSelect.innerHTML = options;
+  } else {
+    streetSelect.innerHTML = "<option value=''>Select Street</option>";
+  }
+
+  updateVicinities();
+  updateClassification();
+}
+		function updateClassification() {
+			var vicinity = document.getElementById("vicinity").value;
+            var barangay = document.getElementById("baranggay").value;
+            var street = document.getElementById("street").value;
+			var classificationSelect = document.getElementById("classification");
+			if (vicinity == "From T. Sanchez Street to Noli Me Tangere Street_1" ) {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 1'>CR</option>";
+			} else if (vicinity == "From Noli Me Tangere Street to F. Durano Street_2") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 2'>CR</option>";
+			} else if (vicinity == "From T. Sanchez Street to Noli Me Tangere Street_3") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 3'>CR</option>";
+																				
+																				
+			} else if (vicinity == "From Noli Me Tangere Street to F. Durano Street_4") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 4'>RR</option>";
+			
+			} else if (vicinity == "From T. Sanchez Street to Noli Me Tangere Street_5") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 5'>RR</option>";
+			
+			} else if (vicinity == "A.D. Curato -  M. Calo_6") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 6'>CR</option>";
+			
+			} else if (vicinity == "M. Calo - M. Tupaz_7") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 7'>CR</option>";
+			
+			} else if (vicinity == "M. Tupaz - Mabini Street_8") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 8'>CR</option>";
+			
+			} else if (vicinity == "From A.D. Curato Street to M. Calo Street_9") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 9'>RR</option>";
+			
+			} else if (vicinity == "From M. Calo Street to A. Mabini Street_10") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 10'>CR</option>";
+			
+			} else if (vicinity == "M. Calo - M. Tupaz_11") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 11'>RR</option>";
+			
+			} else if (vicinity == "M. Tupaz - Mabini Street_12") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 12'>RR</option>";
+			
+			} else if (vicinity == "From A.D. Curato Street to M. Calo Street_13") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 13'>CR</option>";
+			
+			} else if (vicinity == "From M. Calo Street to A. Mabini Street_14") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 14'>CR</option>";
+			
+			} else if (vicinity == "M. Calo - Mabini  Street_15") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 15'>RR</option>";
+			
+			} else if (vicinity == "(Outside the Dike)_16") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 16'>RR</option>" + 
+																					   "</option><option value='class 17'>CR</option>";
+
+				//DATU SILONGAN (DISTRICT 1)
+			
+			} else if (vicinity == "From J.C. Aquino Avenue to Datu Silongan Street_17") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 18'>CR</option>";
+			
+			} else if (vicinity == "From Datu Silongan Street to Gomez Street_18") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 19'>CR</option>";
+			
+			} else if (vicinity == "From J.C. Aquino Avenue to D. Silongan Street_19") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 20'>CR</option>";
+			
+			} else if (vicinity == "From D. Silongan Street to Gomez Street_20") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 21'>CR</option>";
+			
+			} else if (vicinity == "From J.C. Aquino Avenue to Gomez Street_21") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 22'>RR</option>" + 
+																								"<option value='class 23'>CR</option>";
+			
+			} else if (vicinity == "From J.C. Aquino Street to Gomez Street_22") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 24'>RR</option>" + 
+																								"<option value='class 25'>CR</option>" ;
+			
+			} else if (vicinity == "From A.D. Curato Street to M. Calo Street_23") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 26'>CR</option>";
+			
+			} else if (vicinity == "From M. Calo Street to A. Mabini Street_24") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 27'>RR</option>" + 
+																								"<option value='class 28'>CR</option>";
+			
+			} else if (vicinity == "From A.D. Curato Street to M. Calo Street_25") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 29'>CR</option>";
+			
+			} else if (vicinity == "From M. Calo Street to A. Mabini Street_26") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 30'>CR</option>" + 
+																								"<option value='class 31'>RR</option>";
+			
+			} else if (vicinity == "From A.D. Curato Street to M. Calo Street_27") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 32'>CR</option>";
+			
+			} else if (vicinity == "From M. Calo Street to A. Mabini Street_28") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 33'>CR</option>" + 
+																								"<option value='class 34'>RR</option>";	
+																								
+			//DIEGO SILANG (DISTRICT 1)
+			} else if (vicinity == "From J.C. Aquino Avenue to D. Silongan Street  ( former M. Del Pilar Street)_29") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 35'>CR</option>";	
+
+			} else if (vicinity == "From D. Silongan Street to Gomez Street_30") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 36'>CR</option>";		
+
+			} else if (vicinity == "From  Gomez Street to T. Sanchez Street_31") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 37'>CR</option>";		
+
+			} else if (vicinity == "From T. Sanchez Street to Noli Me Tangere Street_32") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 38'>CR</option>";	
+
+			} else if (vicinity == "From Noli Me Tangere Street to F. Durano Street_33") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 39'>CR</option>";	
+
+			} else if (vicinity == "From J.C. Aquino Avenue to Gomez Street_34") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 40'>RR</option>" + 
+																								"<option value='class 41'>CR</option>";	
+
+			} else if (vicinity == "From Gomez Street to T. Sanchez Street_35") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 42'>CR</option>";	
+
+			} else if (vicinity == "From T. Sanchez Street to F. Durano Street_36") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 43'>CR</option>";	
+
+			} else if (vicinity == "From J.C. Aquino Avenue to Gomez Street_37") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 44'>CR</option>";
+
+			} else if (vicinity == "From Gomez Street to T. Sanchez Street_38") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 45'>RR</option>" + 
+																								"<option value='class 46'>CR</option>";																		
+			} else if (vicinity == "J.C. Aquino-Datu Silongan_39") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 47'>CR</option>";	
+
+			} else if (vicinity == "Datu Silongan-Gomez_40") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 48'>CR</option>";	
+
+			} else if (vicinity == "P. Gomez - T. Sanchez_41") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 49'>RR</option>" + 
+																								"<option value='class 50'>CR</option>";		
+
+			} else if (vicinity == "From Noli Me Tangere Street to F. Durano Street_42") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 51'>RR</option>" + 
+																								"<option value='class 52'>CR</option>";	
+
+			} else if (vicinity == "From J.C. Aquino Avenue to D. Silongan Street_43") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 53'>CR</option>";	
+
+			} else if (vicinity == "From Silongan Street to Lagnada Street_44") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 54'>CR</option>";	
+
+			} else if (vicinity == "From Lagnada Street to T. Sanchez Street_45") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 55'>CR</option>";	
+
+			} else if (vicinity == "From T. Sanchez Street to Noli Me Tangere Street_46") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 56'>CR</option>";		
+
+			} else if (vicinity == "From Noli Me Tangere Street to F. Durano Street_47") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 57'>CR</option>";		
+
+			} else if (vicinity == "None_48") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 58'>RR</option>";	
+
+			} else if (vicinity == "From Montilla Boulevard to A.D. Curato Street_49") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 59'>CR</option>";	
+
+			} else if (vicinity == "From Montilla Boulevard to San Francisco Street_50") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 60'>RR</option>";	
+
+			} else if (vicinity == "Montilla Blvd.-A. D. Curato_51") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 61'>CR</option>";	
+																					
+			} else if (vicinity == "From Montilla Boulevard to A.D. Curato Street_52") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 62'>RR</option>" + 
+																								"<option value='class 63'>CR</option>";	
+
+			} else if (vicinity == "Montilla Blvd.-R. D. Curato_53") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 64'>CR</option>";	
+
+			} else if (vicinity == "E. Luna-A. D. Curato_54") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 65'>CR</option>";		
+
+			} else if (vicinity == "From Montilla Boulevard to A.D. Curato Street_55") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 66'>RR</option>" + 
+																								"<option value='class 67'>CR</option>";
+
+			} else if (vicinity == "Montilla Blvd-R. D. Calo_56") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 68'>CR</option>";		
+
+			} else if (vicinity == "R. D. Calo-E. Luna_57") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 69'>CR</option>";	
+
+			} else if (vicinity == "E. Luna-A. D. Curato_58") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 70'>CR</option>";	
+
+			} else if (vicinity == "From R. Calo Street to San Francisco Street_59") {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option><option value='class 71'>CR</option>";																		
+			} 
+
+
+
+			
+			else {
+				classificationSelect.innerHTML = "<option value=''>Select Classification</option>";
+			}
+			
+		}
+		
+
+		
+	
+        
+</script>
+</head>
+<body>
+	<header>
+		<h1>Butuan City Land Property Assessment Inquiry</h1>
+		<p>Please fill in the following information to calculate your payable tax.</p>
+		<p>Since our time is limited, we only have 3 barangays available for you to choose. We hope that you'd still test this page.</p>
+	</header>
+	<form>
+        <!--RAndom names in update vicinities are not changed -->
+
+        <label for="baranggay">Barangay:</label>
+        <select id="baranggay" name="baranggay" onchange="updateStreets()">
+            <option value="">Select Barangay</option>
+            <option value="AGAO (DISTRICT 1)">AGAO (DISTRICT 1)</option>
+            <option value="DATU SILONGAN (DISTRICT 1)">DATU SILONGAN (DISTRICT 1)</option>
+			<option value="DIEGO SILANG (DISTRICT 1)">DIEGO SILANG (DISTRICT 1)</option>
+        </select>
+    
+        
+    
+        <label for="street">Street:</label>
+        <select id="street" name="street" onchange="updateVicinities()">
+            <option value="">Select Street</option>
+        </select>
+    
+        
+    
+        <label for="vicinity">Vicinity:</label>
+        <select id="vicinity" name="vicinity" onchange="updateClassification()">
+            <option value="">Select Vicinity</option>
+        </select>
+
+		<label for="classification"> AvailableClassification:</label>
+        <select id="classification" name="classification" >
+            <option value="">Select Classification</option>
+        </select>
+
+	
+
+		<label for="property_type">Property Type:</label>
+		<select id="property_type" name="property_type">
+			<option value="residential">Residential</option>
+			<option value="commercial">Commercial</option>
+			<option value="industrial">Industrial</option>
+		</select><br><br>
+
+		<label for="size">Area of Land (SQ.M):</label>
+		<input type="number" id="size" name="size" onchange="calculateTax()"><br><br>
+
+		<p>Based on the information you give, your assessed value and annual real property tax should be.</p>
+
+		<label for="Assessed_Value">Assessed Value (₱):</label>
+		<input type="text" id="Assessed_Value" name="Assessed_Value" readonly><br>
+
+
+		<label for="payable_tax">Annual Real Property Tax (₱):</label>
+		<input type="text" id="payable_tax" name="payable_tax" readonly><br><br>
+
+		<input type="button" value="Calculate" onclick="calculateTax()">
+
+		<p>Note: This calculation is based on the zonal values of DEPARTMENT ORDER NO.  002 - 2022 dated February 3, 2022.</p>
+	</form>
+</body>
+</html>
