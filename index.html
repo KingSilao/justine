@@ -2,8 +2,24 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Property Tax Calculator</title>
 	<style>
+		/* Desktop styles */
+    .container {
+      width: 800px;
+      margin: 0 auto;
+      background-color: lightgray;
+      padding: 20px;
+    }
+
+    /* Mobile styles */
+    @media only screen and (max-width: 600px) {
+      .container {
+        width: 100%;
+        background-color: lightblue;
+      }
+    }
 		body {
 			background-color: #22E4AC;
 			font-family: Arial, sans-serif;
@@ -572,8 +588,9 @@ function updateStreets() {
 </script>
 </head>
 <body>
+	<div class="container">
 	<header>
-		<h1>Butuan City Land Property Assessment Inquiry 123123123</h1>
+		<h1>Butuan City Land Property Assessment Inquiry</h1>
 		<p>Please fill in the following information to calculate your payable tax.</p>
 		<p>Since our time is limited, we only have 3 barangays available for you to choose. We hope that you'd still test this page.</p>
 	</header>
